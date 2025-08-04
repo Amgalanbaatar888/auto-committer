@@ -1,0 +1,28 @@
+name: Auto Commit
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  auto_commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Set Git Config
+        run: |
+          git config --global user.name "Amgalanbaatar888"
+          git config --global user.email "amgaahero.gl@gmail.com"
+
+      - name: Make Commits
+        run: |
+          timestamp="$(date)"
+          for i in {1..3}; do
+            echo "$timestamp $i" >> commits.log
+            git add commits.log
+            git commit -m "🤖 Auto commit $i on $timestamp"
+          done
+          git push
