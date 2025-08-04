@@ -25,4 +25,7 @@ jobs:
             git add commits.log
             git commit -m "🤖 Auto commit $i on $timestamp"
           done
-          git push
+
+      - name: Push Commits
+        run: |
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
