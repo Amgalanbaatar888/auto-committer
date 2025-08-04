@@ -2,7 +2,7 @@ name: Auto Commit
 
 on:
   schedule:
-    - cron: "0 0 * * *"  # Өдөр бүр 08:00 MGLT (00:00 UTC)
+    - cron: "*/5 * * * *"  # 5 минут тутам автоматаар ажиллана (UTC)
   workflow_dispatch:
 
 jobs:
