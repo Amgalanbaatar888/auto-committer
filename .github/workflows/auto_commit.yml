@@ -2,7 +2,7 @@ name: Auto Commit
 
 on:
   schedule:
-    - cron: "0 0 * * *"  # Every day at 08:00 Mongolian time (00:00 UTC)
+    - cron: "0 0 * * *"  # Өдөр бүр 08:00 MGLT (00:00 UTC)
   workflow_dispatch:
 
 jobs:
@@ -18,14 +18,21 @@ jobs:
           git config --global user.name "Amgalanbaatar888"
           git config --global user.email "amgaahero.gl@gmail.com"
 
-      - name: Update README.md with timestamp
+      - name: Generate Random Motivational Phrase
+        id: motd
         run: |
-          echo "Last auto update: $(date)" > README.md
+          phrases=("Keep pushing forward!" "You're doing best!" "Code. Commit. Conquer." "Small steps, big impact." "Trust the process." "Stay consistent!")
+          echo "phrase=${phrases[$RANDOM % ${#phrases[@]}]}" >> $GITHUB_OUTPUT
+
+      - name: Update README.md with daily log
+        run: |
+          TIMESTAMP=$(TZ='Asia/Ulaanbaatar' date '+%Y-%m-%d %H:%M:%S %Z')
+          echo "- ✅ $TIMESTAMP — ${{ steps.motd.outputs.phrase }}" >> README.md
 
       - name: Commit Changes
         run: |
           git add README.md
-          git commit -m "📝 Daily update: $(date)" || echo "No changes to commit"
+          git commit -m "📝 Auto log at $(date)" || echo "No changes to commit"
 
       - name: Push Changes
         env:
