@@ -2,12 +2,13 @@ name: Auto Commit
 
 on:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 0 * * *"  # Every day at 08:00 Mongolian time (00:00 UTC)
   workflow_dispatch:
 
 jobs:
   auto_commit:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -17,15 +18,17 @@ jobs:
           git config --global user.name "Amgalanbaatar888"
           git config --global user.email "amgaahero.gl@gmail.com"
 
-      - name: Make Commits
+      - name: Update README.md with timestamp
         run: |
-          timestamp="$(date)"
-          for i in {1..3}; do
-            echo "$timestamp $i" >> commits.log
-            git add commits.log
-            git commit -m "🤖 Auto commit $i on $timestamp"
-          done
+          echo "Last auto update: $(date)" > README.md
 
-      - name: Push Commits
+      - name: Commit Changes
         run: |
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
+          git add README.md
+          git commit -m "📝 Daily update: $(date)" || echo "No changes to commit"
+
+      - name: Push Changes
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }} HEAD:main
